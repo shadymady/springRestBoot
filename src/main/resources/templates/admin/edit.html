@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User</title>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/admin/{id} (id=${users.getId()})}" th:object="${users}">
+    <label for="firstName">Enter First name: </label>
+    <input type="text" th:field="*{firstName}" id="firstName"/>
+    <br/>
+
+    <label for="lastName">Enter Last name: </label>
+    <input type="text" th:field="*{lastName}" id="lastName"/>
+    <br/>
+
+    <label for="age">Enter age: </label>
+    <input type="number" th:field="*{age}" id="age"/>
+    <br/>
+
+    <label for="email">Enter email: </label>
+    <input type="text" th:field="*{email}" id="email"/>
+    <br/>
+
+    <label for="password">Input password: </label>
+    <input type="text" th:field="*{password}" id="password">
+    <br/>
+
+    <label>User role:</label><input th:checked="${roles.contains('ROLE_USER')} ? 'checked'" type="checkbox" name="userCheck">
+    <label>Admin role:</label><input th:checked="${roles.contains('ROLE_ADMIN')} ? 'checked'" type="checkbox" name="adminCheck">
+    <br/>
+
+    <input type="submit" value="Edit "/>
+</form>
+<br><br>
+<form th:method="POST" th:action="@{/logout}">
+    <input type="submit" value="Logout">
+</form>
+</body>
+</html>

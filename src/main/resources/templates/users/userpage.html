@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+</head>
+<body>
+Id: <br>
+<p th:text="${user.getId()}">id</p> <br>
+
+First Name: <br>
+<p th:text="${user.getFirstName()}">FirstName</p> <br>
+
+Age: <br>
+<p th:text="${user.getAge()}">age</p><br>
+
+Password: <br>
+<p th:text="${user.getPassword()}">password</p><br>
+
+<br><br>
+<form th:method="POST" th:action="@{/logout}" >
+    <input type="submit" value="Logout">
+</form>
+</body>
+</html>

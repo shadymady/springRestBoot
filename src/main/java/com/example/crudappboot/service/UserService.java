@@ -1,56 +1,20 @@
 package com.example.crudappboot.service;
 
 import com.example.crudappboot.model.User;
-import com.example.crudappboot.model.Role;
-import com.example.crudappboot.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@SuppressWarnings("ALL")
-@Service
-@Transactional
-public class UserService implements UserDetailsService {
+public interface UserService {
+    public void save(User user);
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    public void delete(Long id);
 
-    private final UserRepository userRepository;
+    public void edit(User user);
 
-    public UserService(UserRepository userRepository){
-        this.userRepository = userRepository;
-    }
+    public User printUserById(Long id);
 
-    public void save(User user) {
-        userRepository.save(user);
-    }
+    public List<User> printUsers();
 
-    public void delete(Long id) {
-        userRepository.deleteById(id);
-    }
-
-    public void edit(User user) {
-        entityManager.merge(user);
-    }
-
-    public User printUserById(Long id) {
-        return userRepository.getOne(id);
-    }
-
-    public List<User> printUsers(){
-        return userRepository.findAll();
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String firstName) throws UsernameNotFoundException {
-        return userRepository.findByFirstName(firstName);
-
-    }
 }

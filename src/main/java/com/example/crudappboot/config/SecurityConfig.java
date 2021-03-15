@@ -1,6 +1,7 @@
 package com.example.crudappboot.config;
 
-import com.example.crudappboot.service.UserService;
+import com.example.crudappboot.service.UserDetailsServiceImpl;
+import com.example.crudappboot.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,19 +19,19 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private UserService userService;
+    private UserDetailsServiceImpl userDetailServiceImpl;
 
     @Autowired
     LoginSuccessHandler loginSuccessHandler;
 
-    public SecurityConfig(@Lazy UserService userService) {
-        this.userService = userService;
+    public SecurityConfig(@Lazy UserDetailsServiceImpl userDetailServiceImpl) {
+        this.userDetailServiceImpl = userDetailServiceImpl;
     }
 
     @Override
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailServiceImpl).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -44,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .successHandler(new LoginSuccessHandler())
                 .loginProcessingUrl("/login")
-                .usernameParameter("j_username")
+                .usernameParameter("j_email")
                 .passwordParameter("j_password")
                 .permitAll()
                 .successHandler(loginSuccessHandler)

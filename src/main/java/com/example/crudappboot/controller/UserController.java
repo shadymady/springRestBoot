@@ -1,6 +1,6 @@
 package com.example.crudappboot.controller;
 
-import com.example.crudappboot.service.UserService;
+import com.example.crudappboot.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,21 +15,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserController {
 
     @Autowired
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
     @GetMapping()
     public String printUsers(ModelMap model) {
-        model.addAttribute("users", userService.printUsers());
+        model.addAttribute("users", userServiceImpl.printUsers());
         return "users/userindex";
     }
 
     @GetMapping("/{id}")
     public String printUserById(@PathVariable("id") Long id, ModelMap model){
-        model.addAttribute("user", userService.printUserById(id));
+        model.addAttribute("user", userServiceImpl.printUserById(id));
         return "users/userpage";
     }
 

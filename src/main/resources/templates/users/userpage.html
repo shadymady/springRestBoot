@@ -8,17 +8,20 @@
     <title>User</title>
 </head>
 <body>
-Id: <br>
-<p th:text="${user.getId()}">id</p> <br>
+Id:
+<p th:text="${user.getId()}">id</p>
 
-First Name: <br>
-<p th:text="${user.getFirstName()}">FirstName</p> <br>
+First Name:
+<p th:text="${user.getFirstName()}">firstName</p>
 
-Age: <br>
-<p th:text="${user.getAge()}">age</p><br>
+Last Name:
+<p th:text="${user.getLastName()}">lastName</p>
 
-Password: <br>
-<p th:text="${user.getPassword()}">password</p><br>
+Age:
+<p th:text="${user.getAge()}">age</p>
+
+Email:
+<p th:text="${user.getEmail()}">email</p>
 
 <br><br>
 <form th:method="POST" th:action="@{/logout}" >

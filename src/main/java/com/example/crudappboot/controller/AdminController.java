@@ -1,10 +1,12 @@
 package com.example.crudappboot.controller;
 
-
 import com.example.crudappboot.model.Role;
 import com.example.crudappboot.model.User;
+import com.example.crudappboot.service.RoleServiceImpl;
 import com.example.crudappboot.service.UserServiceImpl;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +17,24 @@ import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminController{
 
     @Autowired
-    private UserServiceImpl userServiceImpl;
+    private final UserServiceImpl userServiceImpl;
+    @Autowired
+    private final RoleServiceImpl roleServiceImpl;
 
-    @GetMapping
-    public String allUsers(Model model) {
+    public AdminController(UserServiceImpl userServiceImpl, RoleServiceImpl roleServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
+        this.roleServiceImpl = roleServiceImpl;
+    }
+
+    @GetMapping()
+    public String allUsers(Model model, @AuthenticationPrincipal User user) {
+        model.addAttribute("listRoles", roleServiceImpl.getAllRoles());
         model.addAttribute("users", userServiceImpl.printUsers());
+        model.addAttribute("user", user);
+
         return "admin/index";
     }
 
@@ -31,16 +43,12 @@ public class AdminController {
         return "admin/new";
     }
 
-    @PostMapping()
+    @PostMapping("/new")
     public String create(@ModelAttribute("user") User user,
-                         @RequestParam(value = "userCheck", required = false) boolean userCheck,
-                         @RequestParam(value = "adminCheck", required = false) boolean adminCheck) {
+                         @RequestParam(value = "roless") String[] role) throws NotFoundException {
         Set<Role> roles = new HashSet<>();
-        if (userCheck) {
-            roles.add(new Role(2L, "ROLE_USER"));
-        }
-        if (adminCheck) {
-            roles.add(new Role(1L, "ROLE_ADMIN"));
+        for (String roleStr : role) {
+            roles.add(roleServiceImpl.getByName(roleStr));
         }
         user.setRoles(roles);
         userServiceImpl.save(user);
@@ -56,18 +64,14 @@ public class AdminController {
     }
 
     @PostMapping("/{id}")
-    public String update(@ModelAttribute("user") User user,
-                         @RequestParam(value = "userCheck", required = false) boolean userCheck,
-                         @RequestParam(value = "adminCheck", required = false) boolean adminCheck) {
-        user.setRoles(null);
-        Set<Role> roles = new HashSet<>();
-        if (adminCheck) {
-            roles.add(new Role(1L, "ROLE_ADMIN"));
+    public String update(@ModelAttribute User user,
+                         @RequestParam(value = "roless") String[] role) throws NotFoundException {
+
+        Set<Role> setRole = new HashSet<>();
+        for (String roles : role) {
+            setRole.add(roleServiceImpl.getByName(roles));
         }
-        if (userCheck) {
-            roles.add(new Role(2L, "ROLE_USER"));
-        }
-        user.setRoles(roles);
+        user.setRoles(setRole);
         userServiceImpl.edit(user);
         return "redirect:/admin";
     }

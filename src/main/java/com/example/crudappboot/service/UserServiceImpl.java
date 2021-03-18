@@ -1,14 +1,11 @@
 package com.example.crudappboot.service;
 
 import com.example.crudappboot.model.User;
-import com.example.crudappboot.model.Role;
 import com.example.crudappboot.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,12 +13,12 @@ import java.util.List;
 
 @SuppressWarnings("ALL")
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
     private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository){
@@ -51,4 +48,5 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findUserByEmail(email);
     }
+
 }

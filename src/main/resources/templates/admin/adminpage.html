@@ -5,9 +5,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User</title>
+    <title>Admin panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
 </head>
 <body>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top justify-content-between">
+    <span class="navbar-brand" th:text="${user.getEmail()} + ' with roles ' + ${user.getRoles()}"></span>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+        </li>
+    </ul>
+</nav>
+<br><br>
 Id:
 <p th:text="${user.getId()}">id</p>
 
@@ -34,8 +46,6 @@ Password:
 </div>
 
 <br><br>
-<form th:method="POST" th:action="@{/logout}">
-    <input type="submit" value="Logout">
-</form>
+
 </body>
 </html>

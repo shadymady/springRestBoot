@@ -2,10 +2,10 @@ package com.example.crudappboot.controller;
 
 import com.example.crudappboot.model.Role;
 import com.example.crudappboot.model.User;
+
 import com.example.crudappboot.service.RoleServiceImpl;
 import com.example.crudappboot.service.UserServiceImpl;
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,9 +19,7 @@ import java.util.Set;
 @RequestMapping("/admin")
 public class AdminController{
 
-    @Autowired
     private final UserServiceImpl userServiceImpl;
-    @Autowired
     private final RoleServiceImpl roleServiceImpl;
 
     public AdminController(UserServiceImpl userServiceImpl, RoleServiceImpl roleServiceImpl) {
@@ -31,10 +29,9 @@ public class AdminController{
 
     @GetMapping()
     public String allUsers(Model model, @AuthenticationPrincipal User user) {
-        model.addAttribute("listRoles", roleServiceImpl.getAllRoles());
+        model.addAttribute("roles", roleServiceImpl.getAllRoles());
         model.addAttribute("users", userServiceImpl.printUsers());
         model.addAttribute("user", user);
-
         return "admin/index";
     }
 
@@ -48,7 +45,7 @@ public class AdminController{
                          @RequestParam(value = "roless") String[] role) throws NotFoundException {
         Set<Role> roles = new HashSet<>();
         for (String roleStr : role) {
-            roles.add(roleServiceImpl.getByName(roleStr));
+            roles.add(roleServiceImpl.getByRole(roleStr));
         }
         user.setRoles(roles);
         userServiceImpl.save(user);
@@ -65,13 +62,13 @@ public class AdminController{
 
     @PostMapping("/{id}")
     public String update(@ModelAttribute User user,
-                         @RequestParam(value = "roless") String[] role) throws NotFoundException {
+                         @RequestParam(value = "roless") String[] role){
 
-        Set<Role> setRole = new HashSet<>();
-        for (String roles : role) {
-            setRole.add(roleServiceImpl.getByName(roles));
+        Set<Role> roles = new HashSet<>();
+        for (String roleStr : role) {
+            roles.add(roleServiceImpl.getByRole(roleStr));
         }
-        user.setRoles(setRole);
+        user.setRoles(roles);
         userServiceImpl.edit(user);
         return "redirect:/admin";
     }
@@ -82,9 +79,4 @@ public class AdminController{
         return "redirect:/admin";
     }
 
-    @GetMapping("/{id}")
-    public String show(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userServiceImpl.printUserById(id));
-        return "admin/adminpage";
-    }
 }

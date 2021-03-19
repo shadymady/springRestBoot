@@ -10,7 +10,7 @@
 <body>
 
 <nav class="navbar navbar-dark bg-dark d-flex justify-content-between">
-    <span class="navbar-brand" th:text="${user.getEmail()} + ' with roles: ' + ${user.getRoles()}">
+    <span class="navbar-brand" th:text="${user.getEmail()} + ' with roles: ' + ${user.roles.toString().replace('[ROLE_', '').replace(']', '')}">
     </span>
     <ul class="navbar-nav">
         <li class="nav-item">
@@ -21,7 +21,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <!--Боковая панель-->
+
         <div class="col-2 px-0">
             <br>
             <ul class="nav nav-pills flex-column">
@@ -33,14 +33,11 @@
                 </li>
             </ul>
         </div>
-        <!--Боковая панель-->
 
         <div class="container secondary col-sm-10 px-0">
             <div class="col-12 bg-light vh-100">
                 <div><h2>Admin panel</h2>
-
                     <div class="card">
-                        <!--Tabs-->
                         <ul class="nav nav-tabs"
                             id="testTab"
                             role="tablist">
@@ -65,7 +62,7 @@
                                     aria-selected="false">New User</a>
                             </li>
                         </ul>
-                            <!--Tabs-->
+
                         <div class="tab-content" id="testTabContent">
 
                             <div class="tab-pane fade show active" id="admin" role="tabpanel"
@@ -94,7 +91,7 @@
                                                     <td th:text="${user.age}"></td>
                                                     <td th:text="${user.email}"></td>
 
-                                                    <td th:text="${user.getRoles()}"></td>
+                                                    <td th:text="${user.roles.toString().replace('[ROLE_', '').replace(']', '')}"></td>
 
                                                     <td>
                                                         <button class="btn btn-info edit-btn"
@@ -109,7 +106,7 @@
                                                                 th:data-target="${'#delete'+ user.id}">Delete
                                                         </button>
                                                     </td>
-                                                    <!--Modal-->
+
                                                     <div class="modal fade"
                                                          th:id="${'edit'+ user.id}"
                                                          tabindex="-1"
@@ -202,8 +199,8 @@
                                                                                     required>
                                                                                 <option
                                                                                         th:each="role : ${users}"
-                                                                                        th:value="${role.getRoles()}"
-                                                                                        th:text="${role.getRoles()}"></option>
+                                                                                        th:value="${role.roles}"
+                                                                                        th:text="${role.roles}"></option>
                                                                             </select>
                                                                         </div>
                                                                     </form>
@@ -221,7 +218,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
 
                                                     <div class="modal fade"
                                                          th:id="${'delete'+ user.id}"
@@ -333,8 +329,6 @@
                                 </div>
                             </div>
 
-<!--                            New tab-->
-
                             <div class="tab-pane fade" id="new" role="tabpanel" aria-labelledby="new-tab">
                                 <div><h5 class="card-header">Add new user</h5>
                                     <div class="container-fluid bg-white text-center">
@@ -396,9 +390,9 @@
                                                                 name="roless"
                                                                 required>
                                                             <option
-                                                                    th:each="role : ${users}"
-                                                                    th:value="${role.roles}"
-                                                                    th:text="${role.roles}">
+                                                                    th:each="role : ${roles}"
+                                                                    th:value="${role.role}"
+                                                                    th:text="${role.role}">
                                                             </option>
                                                         </select>
                                                     </div>

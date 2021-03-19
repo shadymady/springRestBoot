@@ -10,7 +10,6 @@ import java.util.Set;
 public class Role implements GrantedAuthority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
@@ -19,6 +18,10 @@ public class Role implements GrantedAuthority {
     @Transient
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
+
+    public Role(Long id) {
+        this.id = id;
+    }
 
     public Role(Long id, String role) {
         this.id = id;

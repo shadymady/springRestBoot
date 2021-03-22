@@ -7,16 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @SuppressWarnings("ALL")
 @Service
 public class UserServiceImpl implements UserService {
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Autowired
     private final UserRepository userRepository;
@@ -33,8 +28,8 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
-    public void edit(User user) {
-        entityManager.merge(user);
+    public void edit(User editUser) {
+        userRepository.save(editUser);
     }
 
     public User printUserById(Long id) {

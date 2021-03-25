@@ -12,7 +12,7 @@ public class UserDTO {
     private String password;
     private Set<String> roles;
 
-    public UserDTO(Long id, String firstName, String lastName, byte age, String email, String password, Set<String> roles) {
+    public UserDTO(Long id, String firstName, String lastName, int age, String email, String password, Set<String> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -50,7 +50,7 @@ public class UserDTO {
         return age;
     }
 
-    public void setAge(byte age) {
+    public void setAge(int age) {
         this.age = age;
     }
 

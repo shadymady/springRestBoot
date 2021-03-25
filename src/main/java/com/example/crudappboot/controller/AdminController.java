@@ -1,81 +1,40 @@
 package com.example.crudappboot.controller;
 
-import com.example.crudappboot.model.Role;
 import com.example.crudappboot.model.User;
 
-import com.example.crudappboot.service.RoleServiceImpl;
+import com.example.crudappboot.model.UserDTO;
 import com.example.crudappboot.service.UserServiceImpl;
-import javassist.NotFoundException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController{
 
-    private final UserServiceImpl userServiceImpl;
-    private final RoleServiceImpl roleServiceImpl;
+    @Autowired
+    private UserServiceImpl userServiceImpl;
 
-    public AdminController(UserServiceImpl userServiceImpl, RoleServiceImpl roleServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
-        this.roleServiceImpl = roleServiceImpl;
-    }
-
-    @GetMapping()
-    public String allUsers(Model model, @AuthenticationPrincipal User user) {
-        model.addAttribute("roles", roleServiceImpl.getAllRoles());
-        model.addAttribute("users", userServiceImpl.printUsers());
+    @GetMapping
+    public String adminPage(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        model.addAttribute("users", userServiceImpl.getAllUsers());
         model.addAttribute("user", user);
         return "admin/index";
     }
 
-    @GetMapping("/new")
-    public String newUser(@ModelAttribute("user") User user) {
-        return "admin/new";
-    }
-
-    @PostMapping("/new")
-    public String create(@ModelAttribute("user") User user,
-                         @RequestParam(value = "roless") String[] role) throws NotFoundException {
-        Set<Role> roles = new HashSet<>();
-        for (String roleStr : role) {
-            roles.add(roleServiceImpl.getByRole(roleStr));
-        }
-        user.setRoles(roles);
-        userServiceImpl.save(user);
-        return "redirect:/admin";
-    }
-
-    @GetMapping("/{id}/edit")
-    public String editUser(Model model, @PathVariable("id") Long id) {
-        User user = userServiceImpl.printUserById(id);
-        model.addAttribute("users", user);
-        model.addAttribute("roles", user.getRoles().toString());
-        return "admin/edit";
-    }
-
-    @PostMapping("/{id}")
-    public String update(@ModelAttribute User user,
-                         @RequestParam(value = "roless") String[] role){
-
-        Set<Role> roles = new HashSet<>();
-        for (String roleStr : role) {
-            roles.add(roleServiceImpl.getByRole(roleStr));
-        }
-        user.setRoles(roles);
-        userServiceImpl.edit(user);
-        return "redirect:/admin";
-    }
-
-    @PostMapping("/{id}/delete")
-    public String deleteUser(@PathVariable("id") Long id) {
-        userServiceImpl.delete(id);
-        return "redirect:/admin";
+    @GetMapping("getCurrentUser")
+    public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
+        UserDTO currentUser = userServiceImpl.getUserByName(principal.getName());
+        return new ResponseEntity<>(currentUser, HttpStatus.OK);
     }
 
 }

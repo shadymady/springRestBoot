@@ -1,18 +1,23 @@
 package com.example.crudappboot.service;
 
 import com.example.crudappboot.model.User;
+import com.example.crudappboot.model.UserDTO;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService {
-    void save(User user);
+    List<UserDTO> getAllUsers();
 
-    void delete(Long id);
+    UserDTO getUserById(Long id);
 
-    void edit(User user);
+    UserDTO getUserByName(String name);
 
-    User printUserById(Long id);
+    void addUser(UserDTO user);
 
-    List<User> printUsers();
+    void deleteUser(Long id);
 
+    void editUser(UserDTO user);
+
+    Set<String> getNameRoles();
 }

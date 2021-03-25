@@ -1,10 +1,12 @@
 package com.example.crudappboot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("JpaAttributeTypeInspection")
@@ -28,25 +30,28 @@ public class User implements UserDetails {
     @Column
     private String email;
 
+    @Column
+    private String password;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
-    private Set<Role> roles;
-
-    @Column
-    private String password;
+    @JsonIgnore
+    private Set<Role> roles = new HashSet<>();
 
     public User(){
     }
 
-    public User(String firstName, String lastName, int age, String email, String password, Set<Role> roles){
+    public User(Long id, String firstName, String lastName, int age, String email, String password, Set<Role> roles) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.email = email;
-        this.roles = roles;
         this.password = password;
+        this.roles = roles;
     }
+
 
     public Long getId(){
         return id;
@@ -94,6 +99,10 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getRolesString() {
+        return roles.size() == 2 ? "ADMIN USER" : "USER";
     }
 
     @Override

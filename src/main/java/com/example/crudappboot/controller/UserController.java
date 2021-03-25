@@ -1,13 +1,13 @@
 package com.example.crudappboot.controller;
 
-import com.example.crudappboot.model.User;
+import com.example.crudappboot.model.UserDTO;
 import com.example.crudappboot.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -15,24 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserController {
 
     @Autowired
-    private final UserServiceImpl userServiceImpl;
-
-    public UserController(UserServiceImpl userServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
-    }
+    private UserServiceImpl userServiceImpl;
 
     @GetMapping()
-    public String printUsers(ModelMap model, @AuthenticationPrincipal User user) {
-        model.addAttribute("users", userServiceImpl.printUsers());
+    public String user(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDTO user = userServiceImpl.getUserByName(authentication.getName());
         model.addAttribute("user", user);
-
-        return "users/userindex";
-    }
-
-    @GetMapping("/{id}")
-    public String printUserById(@PathVariable("id") Long id, ModelMap model){
-        model.addAttribute("user", userServiceImpl.printUserById(id));
-        return "users/userpage";
+        return "/users/userindex";
     }
 
 }

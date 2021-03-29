@@ -3,7 +3,7 @@ package com.example.crudappboot.controller;
 import com.example.crudappboot.model.User;
 
 import com.example.crudappboot.model.UserDTO;
-import com.example.crudappboot.service.UserServiceImpl;
+import com.example.crudappboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +20,20 @@ import java.security.Principal;
 public class AdminController{
 
     @Autowired
-    private UserServiceImpl userServiceImpl;
+    private UserService userService;
 
     @GetMapping
     public String adminPage(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        model.addAttribute("users", userServiceImpl.getAllUsers());
+        model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("user", user);
         return "admin/index";
     }
 
     @GetMapping("getCurrentUser")
     public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
-        UserDTO currentUser = userServiceImpl.getUserByName(principal.getName());
+        UserDTO currentUser = userService.getUserByName(principal.getName());
         return new ResponseEntity<>(currentUser, HttpStatus.OK);
     }
 
